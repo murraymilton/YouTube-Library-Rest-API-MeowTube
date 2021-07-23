@@ -10,7 +10,7 @@ from rest_framework import status
 class CommentList(APIView):
 
     def get(self, request):
-        comment = Comment.object.all()
+        comment = Comment.objects.all()
         serializer =CommentSerializer(comment, many=True)
         return Response(serializer.data)
 
@@ -39,7 +39,7 @@ class ModifyComment(APIView):
         comment_id.likes += 1
         serializer = CommentSerializer(comment_id, data=request.data, partial=True)
         if serializer.is_valid():
-            serializer.update()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,10 +52,10 @@ class ModifyComment(APIView):
     #     return Response(serializer.errors, status=)
 
     def delete(self, request, pk):
-        comment_id = Comment.objects.filter(pk)
-        deleateComment= CommentSerializer(comment_id)
+        comment_id = self.get_by_id(pk)
+        deleteComment= CommentSerializer(comment_id)
         comment_id.delete()
-        return Response(deleateComment.data, status=status.HTTP_200_OK)
+        return Response(deleteComment.data, status=status.HTTP_200_OK)
 
 
 
