@@ -37,19 +37,12 @@ class ModifyComment(APIView):
     def patch(self, request, pk):
         comment_id = self.get_by_id(pk)
         comment_id.likes += 1
-        serializer = CommentSerializer(comment_id, data=request.data, partial=True)
+        serializer = CommentSerializer(comment_id.subComment, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # def post(self, request, pk):
-    #     comment_id = self.get_by_id(pk)
-    #     serializer = CommentSerializer(comment_id, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=)
 
     def delete(self, request, pk):
         comment_id = self.get_by_id(pk)
